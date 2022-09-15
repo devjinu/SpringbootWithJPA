@@ -19,7 +19,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@TestPropertySource(locations="classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.properties")
 class MemberControllerTest {
 
     @Autowired
@@ -30,10 +30,10 @@ class MemberControllerTest {
 
     @Autowired
     PasswordEncoder passwordEncoder;
-    
-    public Member createMember(String email, String password){
+
+    public Member createMember(String email, String password) {
         MemberFormDto memberFormDto = new MemberFormDto();
-        
+
         memberFormDto.setEmail(email);
         memberFormDto.setName("홍길동");
         memberFormDto.setAddress("김해시 삼방동");
@@ -41,15 +41,28 @@ class MemberControllerTest {
         Member member = Member.createMember(memberFormDto, passwordEncoder);
         return memberService.saveMember(member);
     }
+
     @Test
     @DisplayName("로그인 성공 테스트")
-    public void loginSuccessTest() throws Exception{
+    public void loginSuccessTest() throws Exception {
         String email = "test@email.com";
-        String password="1234";
+        String password = "1234";
         this.createMember(email, password);
         mockMvc.perform(formLogin().userParameter("email")
                 .loginProcessingUrl("/members/login")
                 .user(email).password(password))
                 .andExpect(SecurityMockMvcResultMatchers.authenticated());
+    }
+
+    @Test
+    @DisplayName("로그인 실패 테스트")
+    public void loginFailTest() throws Exception {
+        String email = "test@email.com";
+        String password = "1234";
+        this.createMember(email, password);
+        mockMvc.perform(formLogin().userParameter("email")
+                .loginProcessingUrl("/members/login")
+                .user(email).password("12345"))
+                .andExpect(SecurityMockMvcResultMatchers.unauthenticated());
     }
 }
