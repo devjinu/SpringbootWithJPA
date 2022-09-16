@@ -33,4 +33,13 @@ class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
+   @Test
+    @DisplayName("상품 등록 페이지 일반 회원 접근 테스트")
+    @WithMockUser(username = "user", roles = "USER")
+    public void itemFormNotAdminTest() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.get("/admin/item/new"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
 }
