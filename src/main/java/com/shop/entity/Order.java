@@ -20,7 +20,7 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -32,7 +32,7 @@ public class Order {
     private OrderStatus orderStatus;
 
     // Order 엔티티가 주인이 아니므로 mappedBy 사용, 하나의 주문이 여러 개의 주문상품을 가지므로 list
-    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime regTime;

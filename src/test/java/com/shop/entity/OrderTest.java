@@ -3,7 +3,9 @@ package com.shop.entity;
 import com.shop.constant.ItemSellStatus;
 import com.shop.repository.ItemRepository;
 import com.shop.repository.MemberRepository;
+import com.shop.repository.OrderItemRepository;
 import com.shop.repository.OrderRepository;
+import jdk.internal.org.objectweb.asm.tree.analysis.SourceInterpreter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,11 +33,15 @@ class OrderTest {
     @Autowired
     ItemRepository itemRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    OrderItemRepository orderItemRepository;
+
     @PersistenceContext
     EntityManager em;
 
-    @Autowired
-    MemberRepository memberRepository;
 
     public Item createItem() {
         Item item = new Item();
@@ -102,5 +109,21 @@ class OrderTest {
         order.getOrderItems().remove(0);
 
         em.flush();
+    }
+
+    @Test
+    @DisplayName("지연 로딩 테스트")
+    public void lazyLoadingTest(){
+        Order order = this.createOrder();
+        Long orderItemId = order.getOrderItems().get(0).getId();
+        em.flush();
+        em.clear();
+
+        OrderItem orderItem = orderItemRepository.findById(orderItemId)
+                .orElseThrow(EntityNotFoundException::new);
+        System.out.println("Order class : "+ orderItem.getOrder().getClass());
+        System.out.println("---------------------------------------------------");
+        orderItem.getOrder().getOrderDate();
+        System.out.println("---------------------------------------------------");
     }
 }
