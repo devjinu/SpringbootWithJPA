@@ -40,7 +40,7 @@ public class ItemFormDto {
     
     private static ModelMapper modelMapper = new ModelMapper();
     
-    public Item creteItem(){
+    public Item createItem(){
         return modelMapper.map(this, Item.class);
         
     }
