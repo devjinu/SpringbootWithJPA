@@ -54,13 +54,14 @@
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
-            <version>5.0.0</version>
+            <!--<version>4.3.1</version>-->
         </dependency>
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-apt</artifactId>
-            <version>5.0.0</version>
+            <!--   <version>4.3.1</version>-->
         </dependency>
+        <!-- Querydsl-->
         <!--Springboot Devtool-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -70,14 +71,12 @@
         <dependency>
             <groupId>nz.net.ultraq.thymeleaf</groupId>
             <artifactId>thymeleaf-layout-dialect</artifactId>
-            <version>3.1.0</version>
         </dependency>
         <!--spring security-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -98,9 +97,8 @@
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>3.1.0</version>
+            <version>2.3.9</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -117,7 +115,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>com.mysema.maven</groupId>
                 <artifactId>apt-maven-plugin</artifactId>
@@ -134,7 +131,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -146,8 +142,6 @@
                     </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
-
 </project>
