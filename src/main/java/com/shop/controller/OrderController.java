@@ -27,10 +27,11 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping(value = "/order")
-    public @ResponseBody ResponseEntity order(@RequestBody @Valid OrderDto orderDto
-            , BindingResult bindingResult, Principal principal){
+    public @ResponseBody
+    ResponseEntity order(@RequestBody @Valid OrderDto orderDto
+            , BindingResult bindingResult, Principal principal) {
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 
@@ -46,7 +47,7 @@ public class OrderController {
 
         try {
             orderId = orderService.order(orderDto, email);
-        } catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
@@ -54,11 +55,11 @@ public class OrderController {
     }
 
     @GetMapping(value = {"/orders", "/orders/{page}"})
-    public String orderHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model){
+    public String orderHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model) {
 
         // 한 번에 가져올 주문 개수 4개
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 4);
-        
+
         // 이메일과 페이징 객체를 파라미터로 전달하여 화면에 전달한 주문 목록 데이터를 리턴값으로 받음
         Page<OrderHistDto> ordersHistDtoList = orderService.getOrderList(principal.getName(), pageable);
 
@@ -67,6 +68,17 @@ public class OrderController {
         model.addAttribute("maxPage", 5);
 
         return "order/orderHist";
+    }
+
+    @PostMapping("order/{orderId}/cnacel")
+    public @ResponseBody
+    ResponseEntity cancelOrder(@PathVariable("orderId") Long orderId, Principal principal) {
+        if (!orderService.validateOrder(orderId, principal.getName())) {
+            return new ResponseEntity<String>("주문 취소 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+        orderService.cancelOrder(orderId);
+        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+
     }
 
 }
