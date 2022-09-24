@@ -68,7 +68,7 @@ public class CartService {
         return cartDetailDtoList;
     }
 
-    // 로그인한 회우너과 장바구니 상품을 저장한 회원이 같은 경우 true
+    // 로그인한 회원과 장바구니 상품을 저장한 회원이 같은 경우 true
     @Transactional(readOnly = true)
     public boolean validateCartItem(Long cartItemId, String email){
         Member curMember = memberRepository.findByEmail(email);
@@ -83,13 +83,19 @@ public class CartService {
         return true;
     }
     
-    
     // 장바구니 수량 업데이트
     public void updateCartItemCount(Long cartItemId, int count){
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(EntityNotFoundException::new);
 
         cartItem.updateCount(count);
+    }
+
+    // 장바구니 상품 삭제
+    public void deleteCartItem(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+        cartItemRepository.delete(cartItem);
     }
 
 }
