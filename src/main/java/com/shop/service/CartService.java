@@ -13,6 +13,7 @@ import com.shop.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -27,23 +28,22 @@ public class CartService {
     private final MemberRepository memberRepository;
     private final CartRepository cartRepository;
     private final CartItemRepositoty cartItemRepository;
-    private final OrderService orderService;
 
-    public Long addCart(CartItemDto cartItemDto, String email) {
+    public Long addCart(CartItemDto cartItemDto, String email){
 
         Item item = itemRepository.findById(cartItemDto.getItemId())
                 .orElseThrow(EntityNotFoundException::new);
         Member member = memberRepository.findByEmail(email);
 
         Cart cart = cartRepository.findByMemberId(member.getId());
-        if (cart == null) {
+        if(cart == null){
             cart = Cart.createCart(member);
             cartRepository.save(cart);
         }
 
         CartItem savedCartItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
 
-        if (savedCartItem != null) {
+        if(savedCartItem != null){
             savedCartItem.addCount(cartItemDto.getCount());
             return savedCartItem.getId();
         } else {
@@ -55,16 +55,41 @@ public class CartService {
 
     @Transactional(readOnly = true)
     public List<CartDetailDto> getCartList(String email){
+
         List<CartDetailDto> cartDetailDtoList = new ArrayList<>();
 
         Member member = memberRepository.findByEmail(email);
         Cart cart = cartRepository.findByMemberId(member.getId());
-        if(cart==null){
+        if(cart == null){
             return cartDetailDtoList;
         }
 
         cartDetailDtoList = cartItemRepository.findCartDetailDtoList(cart.getId());
         return cartDetailDtoList;
+    }
+
+    // 로그인한 회우너과 장바구니 상품을 저장한 회원이 같은 경우 true
+    @Transactional(readOnly = true)
+    public boolean validateCartItem(Long cartItemId, String email){
+        Member curMember = memberRepository.findByEmail(email);
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+        Member savedMember = cartItem.getCart().getMember();
+
+        if(!StringUtils.equals(curMember.getEmail(), savedMember.getEmail())){
+            return false;
+        }
+
+        return true;
+    }
+    
+    
+    // 장바구니 수량 업데이트
+    public void updateCartItemCount(Long cartItemId, int count){
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        cartItem.updateCount(count);
     }
 
 }
