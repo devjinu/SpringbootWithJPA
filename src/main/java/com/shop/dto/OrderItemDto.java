@@ -21,9 +21,10 @@ public class OrderItemDto {
     private String imgUrl;
 
     public OrderItemDto(OrderItem orderItem, String imgUrl){
-        this.itemNm= orderItem.getItem().getItemNm();
+        this.itemNm = orderItem.getItem().getItemNm();
         this.count = orderItem.getCount();
         this.orderPrice = orderItem.getOrderPrice();
         this.imgUrl = imgUrl;
     }
+
 }

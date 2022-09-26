@@ -1,21 +1,31 @@
 package com.shop.controller;
 
-import com.shop.dto.CartDetailDto;
 import com.shop.dto.CartItemDto;
-import com.shop.dto.CartOrderDto;
 import com.shop.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+
+import com.shop.dto.CartDetailDto;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+
+import com.shop.dto.CartOrderDto;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -55,12 +65,11 @@ public class CartController {
         model.addAttribute("cartItems", cartDetailList);
         return "cart/cartList";
     }
-    
+
     // 요청된 자원이 일부를 업데이트 할 때 PATCH사용 -> 장바구니의 수량만 업데이트(PatchMapping)
     @PatchMapping(value = "/cartItem/{cartItemId}")
     public @ResponseBody ResponseEntity updateCartItem(@PathVariable("cartItemId") Long cartItemId, int count, Principal principal){
-        
-        // 장바구니 속 상품의 개수가 0개 이하일 때 메시지
+
         if(count <= 0){
             return new ResponseEntity<String>("최소 1개 이상 담아주세요", HttpStatus.BAD_REQUEST);
         } else if(!cartService.validateCartItem(cartItemId, principal.getName())){
@@ -71,7 +80,6 @@ public class CartController {
         return new ResponseEntity<Long>(cartItemId, HttpStatus.OK);
     }
 
-    
     // 장바구니 상품 삭제(delete)
     @DeleteMapping(value = "/cartItem/{cartItemId}")
     public @ResponseBody ResponseEntity deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Principal principal){

@@ -15,7 +15,7 @@ public class ItemSearchDto {
     // itemNm : 상품명
     // createdBy : 상품등록자 아이디
     private String searchBy;
-    
+
     private String searchQuery = "";
     
 }

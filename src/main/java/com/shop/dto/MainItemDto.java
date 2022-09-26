@@ -20,7 +20,7 @@ public class MainItemDto {
 
     // @QueryProjection을 사용하여 Querydsl로 결과 조회 시 MainItemDto 객체로 바로 받아올 수 있게 함
     @QueryProjection
-    public MainItemDto(Long id, String itemNm, String itemDetail, String imgUrl, Integer price){
+    public MainItemDto(Long id, String itemNm, String itemDetail, String imgUrl,Integer price){
         this.id = id;
         this.itemNm = itemNm;
         this.itemDetail = itemDetail;
